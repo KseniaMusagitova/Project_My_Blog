@@ -1,0 +1,75 @@
+{% extends "blog/base.html" %}
+{% block content %}
+
+<article class="media content-section">
+    <img class="rounded-circle article-img" src="{{ object.author.profile.image.url }}">
+    <div class="media-body">
+        <div class="article-metadata">
+            <a class="mr-2" href="#">{{ post.author }}</a>
+            <small class="text-muted">{{ object.date_posted | date:"F, d, Y" }}</small>
+            <div>
+                <a class="btn btn-secondary btn-sm mt-1 mb-1" href="{% url 'post-update' object.id %}">Update</a>
+                <a class="btn btn-danger btn-sm mt-1 mb-1" href="{% url 'post-delete' object.id %}">Delete</a>
+            </div>
+        </div>
+        <h2 class="article-title">{{ object.title }}</h2>
+        <p class="article-content">{{ object.content }}</p>
+
+        {% if post.img %}
+        <p>
+
+            <img src="{{post.img.url}}" class="img-thumbnail" style="width:200px;">
+        </p>
+        {% else %}
+        <p></p>
+        {% endif %}
+    </div>
+</article>
+
+
+
+<hr>
+
+<p>Comments ({{ object.comments_posts.all.count }})</p>
+
+<p>Content:</p>
+
+{% if user.is_authenticated %}
+<form action="" id="add_form" method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+
+<button form="add_form" type="submit" class="btn btn-primary">Leave a Comment</button>
+</form>
+{% endif %}
+
+
+
+{% if messages %}
+<div class="alert alert-{{ message.tags }}">
+    {% for message in messages %}
+
+    {% endfor %}
+</div>
+{% endif %}
+
+
+<ul>
+    {% for i in object.comments_posts.all %}
+    <hr>
+
+    <img class="rounded-circle" src="{{ i.author.profile.image.url }}" width="40px" height="40px">
+    {{ i.author }}<br>
+
+    <div style="text-indent:45px;">{{ i.text }}</div>
+    <div style="text-indent:45px;">
+        <small>
+        дата создания: {{ i.created }}</small>
+
+    </div>
+
+    {% endfor %}
+</ul>
+
+
+{% endblock %}
